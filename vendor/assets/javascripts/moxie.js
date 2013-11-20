@@ -493,11 +493,15 @@ define("moxie/core/I18n", [
 		 * @return {String} String with replaced tokens
 		 */
 		sprintf: function(str) {
-			var args = [].slice.call(arguments, 1);
+			var args = [].slice.call(arguments, 1), reStr = '';
 
-			return str.replace(/%[a-z]/g, function() {
-				return args.shift() || '';
+			Basic.each(str.split(/%[a-z]/), function(part) {
+				reStr += part;
+				if (args.length) {
+					reStr += args.shift();
+				}
 			});
+			return reStr;
 		}
 	};
 });
@@ -4470,9 +4474,9 @@ define("moxie/xhr/XMLHttpRequest", [
 					// 8.2
 					// this.dispatchEvent('loadstart'); // will be dispatched either by native or runtime xhr
 					// 8.3
-					//if (!_upload_complete_flag) {
+					if (!_upload_complete_flag) {
 						// this.upload.dispatchEvent('loadstart');	// will be dispatched either by native or runtime xhr
-					//}
+					}
 				}
 				// 8.5 - Return the send() method call, but continue running the steps in this algorithm.
 				_doXHR.call(this, data);
@@ -8899,9 +8903,9 @@ define("moxie/runtime/flash/xhr/XMLHttpRequest", [
 			// this.dispatchEvent('progress');
 			this.dispatchEvent('abort');
 
-			//if (!upload_complete_flag) {
+			if (!upload_complete_flag) {
 				// this.dispatchEvent('uploadprogress');
-			//}
+			}
 		}
 	};
 
